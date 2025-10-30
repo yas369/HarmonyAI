@@ -13,13 +13,13 @@ export default {
       },
       colors: {
         brand: {
-          purple: "#9B5DE5",
-          aqua: "#00BBF9",
-          highlight: "#FEE440"
+          purple: "#FF6B35",
+          aqua: "#FFA62B",
+          highlight: "#FFD166"
         }
       },
       boxShadow: {
-        glow: "0 0 25px rgba(155, 93, 229, 0.35)"
+        glow: "0 0 25px rgba(255, 107, 53, 0.35)"
       },
       backdropBlur: {
         xs: "2px"

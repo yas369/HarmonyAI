@@ -1,13 +1,29 @@
 const SETTINGS_STORAGE_KEY = "harmonyai-settings";
 
-function normalizeBase(url) {
-  return url.replace(/\/$/, "");
+function buildUrl(base, path) {
+  const sanitizedBase = base ? base.replace(/\/+$/, "") : "";
+  const sanitizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${sanitizedBase}${sanitizedPath}` || sanitizedPath;
 }
 
-function buildUrl(base, path) {
-  const sanitizedBase = base.replace(/\/+$/, "");
-  const sanitizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${sanitizedBase}${sanitizedPath}`;
+function isBrowser() {
+  return typeof window !== "undefined" && typeof document !== "undefined";
+}
+
+function isLocalHostname(hostname) {
+  return /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i.test(hostname);
+}
+
+function isLocalUrl(candidate) {
+  if (!candidate) {
+    return false;
+  }
+  try {
+    const url = new URL(candidate, isBrowser() ? window.location.origin : "http://localhost");
+    return isLocalHostname(url.hostname);
+  } catch (_error) {
+    return false;
+  }
 }
 
 let runtimeConfigPromise;
@@ -26,7 +42,7 @@ async function loadRuntimeConfig() {
 }
 
 function getStoredBaseUrl() {
-  if (typeof window === "undefined") {
+  if (!isBrowser()) {
     return null;
   }
   try {
@@ -43,52 +59,80 @@ function getStoredBaseUrl() {
   }
 }
 
-async function getApiBaseCandidates() {
+function normalizeCandidate(value) {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  if (value === "") {
+    return "";
+  }
+  const trimmed = String(value).trim();
+  return trimmed ? trimmed.replace(/\/+$/, "") : null;
+}
+
+async function getApiBaseCandidates(preferredBaseUrl) {
   const candidates = [];
+
+  const addCandidate = (value, { allowRemoteLocalhost = true } = {}) => {
+    const normalized = normalizeCandidate(value);
+    if (normalized === null || candidates.includes(normalized)) {
+      return;
+    }
+
+    if (!allowRemoteLocalhost && isBrowser()) {
+      const { hostname } = window.location;
+      if (!isLocalHostname(hostname) && isLocalUrl(normalized)) {
+        return;
+      }
+    }
+
+    candidates.push(normalized);
+  };
+
+  addCandidate(preferredBaseUrl);
 
   const runtimeConfig = await loadRuntimeConfig();
   if (runtimeConfig?.apiBaseUrl) {
-    candidates.push(runtimeConfig.apiBaseUrl);
+    addCandidate(runtimeConfig.apiBaseUrl, { allowRemoteLocalhost: false });
   }
 
-  const storedBase = getStoredBaseUrl();
-  if (storedBase) {
-    candidates.push(storedBase);
-  }
+  addCandidate(getStoredBaseUrl());
 
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && envUrl.trim().length > 0) {
-    candidates.push(envUrl);
+    addCandidate(envUrl);
   }
 
-  if (typeof window !== "undefined" && window.location) {
+  if (isBrowser() && window.location) {
     const { origin, hostname, protocol } = window.location;
-    candidates.push(normalizeBase(origin));
-    candidates.push(`${normalizeBase(origin)}/api`);
+    addCandidate(origin);
+    addCandidate(`${origin}/api`);
+    addCandidate("", { allowRemoteLocalhost: false });
 
-    if (/localhost|127\.0\.0\.1/i.test(hostname)) {
-      const localBase = `${protocol}//localhost:4000`;
-      const loopbackBase = `${protocol}//127.0.0.1:4000`;
-      candidates.push(localBase, loopbackBase);
+    if (isLocalHostname(hostname)) {
+      addCandidate(`${protocol}//localhost:4000`);
+      addCandidate(`${protocol}//127.0.0.1:4000`);
     }
+  } else {
+    addCandidate("");
   }
 
-  candidates.push("http://localhost:4000");
+  addCandidate("http://localhost:4000");
 
-  const normalized = candidates
-    .filter(Boolean)
-    .map((candidate) => candidate.replace(/\/+$/, ""));
-
-  return Array.from(new Set(normalized));
+  return candidates;
 }
 
-export async function composeTrack(payload) {
-  const attemptedBases = await getApiBaseCandidates();
+export async function composeTrack(payload, options = {}) {
+  const attemptedUrls = [];
   let lastError;
 
-  for (const baseUrl of attemptedBases) {
+  const baseCandidates = await getApiBaseCandidates(options.preferredBaseUrl);
+
+  for (const baseUrl of baseCandidates) {
+    const endpoint = buildUrl(baseUrl ?? "", "generate");
+    attemptedUrls.push(endpoint);
     try {
-      const response = await fetch(buildUrl(baseUrl, "generate"), {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,9 +168,11 @@ export async function composeTrack(payload) {
     }
   }
 
-  const attempted = attemptedBases.join(", ");
   const fallbackMessage =
     lastError?.message || "Unable to contact the HarmonyAI composer service.";
 
-  throw new Error(`${fallbackMessage} (Attempted: ${attempted})`);
+  throw new Error(
+    `${fallbackMessage} (Attempted: ${attemptedUrls.join(", ")})\n` +
+      "Update your Composer API URL in Settings or ensure the backend is running."
+  );
 }

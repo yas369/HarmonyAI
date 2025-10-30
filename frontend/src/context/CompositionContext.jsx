@@ -15,29 +15,29 @@ export const stageMessages = [
 
 export const emotionThemes = {
   Love: {
-    gradient: "from-rose-500/40 via-purple-500/30 to-fuchsia-500/20",
-    glow: "shadow-rose-500/40",
-    accent: "text-rose-200"
-  },
-  Devotion: {
-    gradient: "from-amber-400/40 via-orange-300/30 to-yellow-200/20",
-    glow: "shadow-amber-400/40",
+    gradient: "from-orange-500/45 via-rose-400/35 to-amber-300/20",
+    glow: "shadow-orange-500/40",
     accent: "text-amber-100"
   },
+  Devotion: {
+    gradient: "from-amber-500/45 via-orange-400/35 to-yellow-200/20",
+    glow: "shadow-amber-500/40",
+    accent: "text-yellow-100"
+  },
   Celebration: {
-    gradient: "from-orange-500/40 via-red-400/30 to-pink-400/20",
-    glow: "shadow-orange-500/40",
+    gradient: "from-red-500/40 via-orange-500/35 to-amber-200/20",
+    glow: "shadow-red-500/35",
     accent: "text-orange-100"
   },
   Sadness: {
-    gradient: "from-slate-600/50 via-blue-500/30 to-cyan-400/20",
-    glow: "shadow-slate-500/40",
-    accent: "text-blue-100"
+    gradient: "from-amber-300/35 via-orange-200/25 to-yellow-100/15",
+    glow: "shadow-amber-400/30",
+    accent: "text-amber-50"
   },
   Calm: {
-    gradient: "from-blue-500/40 via-cyan-400/30 to-teal-300/20",
-    glow: "shadow-blue-500/40",
-    accent: "text-cyan-100"
+    gradient: "from-orange-300/35 via-amber-200/25 to-yellow-100/15",
+    glow: "shadow-orange-300/30",
+    accent: "text-yellow-50"
   }
 };
 
@@ -145,7 +145,9 @@ export const CompositionProvider = ({ children }) => {
       }, 2600);
 
       try {
-        const data = await composeTrack(payload);
+        const data = await composeTrack(payload, {
+          preferredBaseUrl: settings.apiBaseUrl
+        });
         const composition = {
           ...payload,
           ...data,
@@ -169,7 +171,7 @@ export const CompositionProvider = ({ children }) => {
         setIsGenerating(false);
       }
     },
-    [showToast]
+    [showToast, settings.apiBaseUrl]
   );
 
   const updateSettings = useCallback((updater) => {
