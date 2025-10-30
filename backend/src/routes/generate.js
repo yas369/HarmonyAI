@@ -1,12 +1,11 @@
-import { Router } from "express";
+const { Router } = require("express");
 
-import { requestComposition } from "../services/aiClient";
-import { uploadFile } from "../services/storage";
-import { GenerateRequestBody, GenerateResponse } from "../types/composition";
+const { requestComposition } = require("../services/aiClient");
+const { uploadFile } = require("../services/storage");
 
 const router = Router();
 
-router.post<{}, GenerateResponse, GenerateRequestBody>("/generate", async (req, res, next) => {
+router.post("/generate", async (req, res, next) => {
   try {
     const composition = await requestComposition(req.body);
 
@@ -26,13 +25,14 @@ router.post<{}, GenerateResponse, GenerateRequestBody>("/generate", async (req, 
   }
 });
 
-function buildDestination(body: GenerateRequestBody, extension: string): string {
-  const slug = body.genre
+function buildDestination(body, extension) {
+  const genreSlug = String(body.genre || "track")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-  const stem = `${Date.now()}_${slug}_${body.emotion.toLowerCase()}`;
+  const emotionSlug = String(body.emotion || "mood").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const stem = `${Date.now()}_${genreSlug}_${emotionSlug}`;
   return `compositions/${stem}.${extension}`;
 }
 
-export default router;
+module.exports = router;

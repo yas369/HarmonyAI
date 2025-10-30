@@ -1,9 +1,9 @@
-import cors from "cors";
-import express from "express";
+const cors = require("cors");
+const express = require("express");
 
-import { config } from "./config/env";
-import { initFirebase } from "./config/firebase";
-import generateRouter from "./routes/generate";
+const { config } = require("./config/env");
+const { initFirebase } = require("./config/firebase");
+const generateRouter = require("./routes/generate");
 
 const app = express();
 
@@ -16,13 +16,10 @@ app.get("/health", (_req, res) => {
 
 app.use(generateRouter);
 
-app.use(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    console.error(err);
-    res.status(500).json({ message: err.message });
-  }
-);
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ message: err?.message || "Internal Server Error" });
+});
 
 async function bootstrap() {
   try {
@@ -40,4 +37,5 @@ if (require.main === module) {
   bootstrap();
 }
 
-export default app;
+module.exports = app;
+module.exports.bootstrap = bootstrap;

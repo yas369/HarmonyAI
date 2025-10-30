@@ -1,19 +1,17 @@
-import { extname } from "path";
+const { extname } = require("path");
 
-import { storageBucket } from "../config/firebase";
+const { storageBucket } = require("../config/firebase");
 
-export async function uploadFile(
-  filePath: string,
-  destination: string
-): Promise<string> {
-  const bucket = storageBucket();
-  if (!bucket) {
+async function uploadFile(filePath, destination) {
+  const storageService = storageBucket();
+  if (!storageService) {
     return filePath;
   }
 
-  const storage = bucket.bucket();
-  const file = storage.file(destination);
-  await storage.upload(filePath, {
+  const bucket = storageService.bucket();
+  const file = bucket.file(destination);
+
+  await bucket.upload(filePath, {
     destination,
     public: true,
     metadata: {
@@ -23,10 +21,10 @@ export async function uploadFile(
   });
 
   const [metadata] = await file.getMetadata();
-  return metadata.mediaLink as string;
+  return metadata.mediaLink || file.publicUrl();
 }
 
-function contentTypeForExtension(ext: string): string {
+function contentTypeForExtension(ext) {
   switch (ext.toLowerCase()) {
     case ".wav":
       return "audio/wav";
@@ -39,3 +37,5 @@ function contentTypeForExtension(ext: string): string {
       return "application/octet-stream";
   }
 }
+
+module.exports = { uploadFile };

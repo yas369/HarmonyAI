@@ -1,11 +1,11 @@
-import admin from "firebase-admin";
+const admin = require("firebase-admin");
 
-import { config } from "./env";
+const { config } = require("./env");
 
 let initialized = false;
 let enabled = true;
 
-export function initFirebase(): void {
+function initFirebase() {
   if (initialized) {
     return;
   }
@@ -27,10 +27,12 @@ export function initFirebase(): void {
   initialized = true;
 }
 
-export function storageBucket(): admin.storage.Storage | null {
+function storageBucket() {
   if (!initialized) {
     initFirebase();
   }
 
   return enabled ? admin.storage() : null;
 }
+
+module.exports = { initFirebase, storageBucket };
