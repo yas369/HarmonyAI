@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTheme } from "../context/ThemeContext.jsx";
 
@@ -9,10 +9,32 @@ const SettingsPanel = ({ settings, onChange }) => {
   const [tempo, setTempo] = useState(settings.defaultTempo);
   const [genre, setGenre] = useState(settings.defaultGenre);
   const [emotion, setEmotion] = useState(settings.defaultEmotion);
+  const [apiBaseUrl, setApiBaseUrl] = useState(settings.apiBaseUrl ?? "");
+
+  useEffect(() => {
+    setTempo(settings.defaultTempo);
+  }, [settings.defaultTempo]);
+
+  useEffect(() => {
+    setGenre(settings.defaultGenre);
+  }, [settings.defaultGenre]);
+
+  useEffect(() => {
+    setEmotion(settings.defaultEmotion);
+  }, [settings.defaultEmotion]);
+
+  useEffect(() => {
+    setApiBaseUrl(settings.apiBaseUrl ?? "");
+  }, [settings.apiBaseUrl]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onChange({ defaultTempo: Number(tempo), defaultGenre: genre, defaultEmotion: emotion });
+    onChange({
+      defaultTempo: Number(tempo),
+      defaultGenre: genre,
+      defaultEmotion: emotion,
+      apiBaseUrl: apiBaseUrl.trim()
+    });
   };
 
   return (
@@ -95,6 +117,22 @@ const SettingsPanel = ({ settings, onChange }) => {
             <span className="block font-mono text-xs mt-1">harmonyai-e665d.firebasestorage.app</span>
           </div>
         </div>
+        <div className="space-y-3 md:col-span-2">
+          <label htmlFor="api-base-url" className="font-medium">
+            Composer API URL
+          </label>
+          <input
+            id="api-base-url"
+            type="url"
+            value={apiBaseUrl}
+            placeholder="https://your-backend-url.com"
+            onChange={(event) => setApiBaseUrl(event.target.value)}
+            className="input-field"
+          />
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">
+            Set this to your deployed backend (Railway) endpoint if the default connection fails.
+          </p>
+        </div>
       </div>
       <div className="flex flex-wrap gap-4">
         <motion.button type="submit" className="gradient-button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
@@ -116,7 +154,8 @@ SettingsPanel.propTypes = {
   settings: PropTypes.shape({
     defaultTempo: PropTypes.number.isRequired,
     defaultGenre: PropTypes.string.isRequired,
-    defaultEmotion: PropTypes.string.isRequired
+    defaultEmotion: PropTypes.string.isRequired,
+    apiBaseUrl: PropTypes.string
   }).isRequired,
   onChange: PropTypes.func.isRequired
 };

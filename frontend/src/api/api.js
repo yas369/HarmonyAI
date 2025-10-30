@@ -1,3 +1,5 @@
+const SETTINGS_STORAGE_KEY = "harmonyai-settings";
+
 function normalizeBase(url) {
   return url.replace(/\/$/, "");
 }
@@ -8,8 +10,51 @@ function buildUrl(base, path) {
   return `${sanitizedBase}${sanitizedPath}`;
 }
 
-function getApiBaseCandidates() {
+let runtimeConfigPromise;
+
+async function loadRuntimeConfig() {
+  if (!runtimeConfigPromise) {
+    if (typeof fetch !== "function") {
+      runtimeConfigPromise = Promise.resolve({});
+    } else {
+      runtimeConfigPromise = fetch("/app-config.json", { cache: "no-store" })
+        .then((response) => (response.ok ? response.json() : {}))
+        .catch(() => ({}));
+    }
+  }
+  return runtimeConfigPromise;
+}
+
+function getStoredBaseUrl() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    const stored = parsed?.apiBaseUrl;
+    return typeof stored === "string" && stored.trim().length > 0 ? stored.trim() : null;
+  } catch (error) {
+    console.warn("Failed to read stored API base", error);
+    return null;
+  }
+}
+
+async function getApiBaseCandidates() {
   const candidates = [];
+
+  const runtimeConfig = await loadRuntimeConfig();
+  if (runtimeConfig?.apiBaseUrl) {
+    candidates.push(runtimeConfig.apiBaseUrl);
+  }
+
+  const storedBase = getStoredBaseUrl();
+  if (storedBase) {
+    candidates.push(storedBase);
+  }
 
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && envUrl.trim().length > 0) {
@@ -18,6 +63,7 @@ function getApiBaseCandidates() {
 
   if (typeof window !== "undefined" && window.location) {
     const { origin, hostname, protocol } = window.location;
+    candidates.push(normalizeBase(origin));
     candidates.push(`${normalizeBase(origin)}/api`);
 
     if (/localhost|127\.0\.0\.1/i.test(hostname)) {
@@ -37,7 +83,7 @@ function getApiBaseCandidates() {
 }
 
 export async function composeTrack(payload) {
-  const attemptedBases = getApiBaseCandidates();
+  const attemptedBases = await getApiBaseCandidates();
   let lastError;
 
   for (const baseUrl of attemptedBases) {

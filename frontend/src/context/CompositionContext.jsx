@@ -44,7 +44,8 @@ export const emotionThemes = {
 const defaultSettings = {
   defaultTempo: 100,
   defaultGenre: "Bollywood Fusion",
-  defaultEmotion: "Love"
+  defaultEmotion: "Love",
+  apiBaseUrl: import.meta.env.VITE_API_URL || ""
 };
 
 const CompositionContext = createContext();
