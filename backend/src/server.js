@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 
 const { initFirebase } = require("./config/firebase");
+const { config } = require("./config/env");
 const generateRouter = require("./routes/generate");
 
 const app = express();
@@ -27,7 +28,7 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ message: err?.message || "Internal Server Error" });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : config.port;
 
 async function bootstrap() {
   try {
