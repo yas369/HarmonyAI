@@ -27,7 +27,7 @@ const HomePage = () => {
         transition={{ duration: 0.6 }}
       >
         <motion.p
-          className="text-sm uppercase tracking-[0.35em] text-white/60 dark:text-black/60"
+          className="text-sm uppercase tracking-[0.35em] text-zinc-500 dark:text-zinc-300"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ repeat: Infinity, duration: 4 }}
         >
@@ -36,7 +36,7 @@ const HomePage = () => {
         <h1 className="text-4xl sm:text-5xl font-heading font-bold">
           Compose Music from Emotion & Words
         </h1>
-        <p className="mx-auto max-w-3xl text-lg text-white/70 dark:text-black/70">
+        <p className="mx-auto max-w-3xl text-lg text-zinc-600 dark:text-zinc-300">
           HarmonyAI transforms your lyrics into melodies inspired by Carnatic, Hindustani, Sufi, and Bollywood traditions.
           Describe the mood, set the tempo, and let our AI orchestra weave a bespoke sonic journey.
         </p>

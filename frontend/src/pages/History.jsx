@@ -23,7 +23,7 @@ const HistoryPage = () => {
     <div className="space-y-8">
       <header className="space-y-3">
         <h1 className="text-4xl font-heading font-bold">My Compositions</h1>
-        <p className="text-white/60 dark:text-black/60 max-w-2xl">
+        <p className="text-zinc-600 dark:text-zinc-300 max-w-2xl">
           Revisit every melody you've generated. Filter by emotion or genre, replay the magic, and favorite the ones that move you.
         </p>
         <input
@@ -36,7 +36,7 @@ const HistoryPage = () => {
       {filtered.length ? (
         <HistoryGrid compositions={filtered} onFavorite={toggleFavorite} />
       ) : (
-        <div className="glass-card px-6 py-10 text-center text-white/60 dark:text-black/60">
+        <div className="glass-card px-6 py-10 text-center text-zinc-600 dark:text-zinc-300">
           No compositions yet. Generate a track to see it here!
         </div>
       )}

@@ -8,7 +8,7 @@ const SettingsPage = () => {
     <div className="space-y-8">
       <header className="space-y-3">
         <h1 className="text-4xl font-heading font-bold">Settings</h1>
-        <p className="text-white/60 dark:text-black/60 max-w-2xl">
+        <p className="text-zinc-600 dark:text-zinc-300 max-w-2xl">
           Tailor HarmonyAI to your workflow. Toggle theme modes, set your ideal tempo, and define the genres you work with most.
         </p>
       </header>

@@ -107,7 +107,7 @@ const WaveformPlayer = ({ audioUrl, emotion }) => {
               className={`rounded-2xl border px-4 py-2 flex items-center gap-2 transition ${
                 isLooping
                   ? "border-brand-highlight bg-brand-highlight/20 text-brand-highlight"
-                  : "border-white/20 text-white/70 dark:text-black/70 hover:border-brand-purple/50"
+                  : "border-black/10 dark:border-white/20 text-zinc-600 dark:text-zinc-200 hover:border-brand-purple/50"
               }`}
             >
               <Repeat className="size-5" />
@@ -116,12 +116,12 @@ const WaveformPlayer = ({ audioUrl, emotion }) => {
           </div>
         </div>
       ) : (
-        <div className="text-center text-white/70 dark:text-black/70 py-6">
+        <div className="text-center text-zinc-600 dark:text-zinc-200 py-6">
           Audio will appear here once generated.
         </div>
       )}
       {emotion ? (
-        <p className="mt-4 text-center text-sm text-white/60 dark:text-black/60">
+        <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-300">
           Emotional palette: <span className="font-medium">{emotion}</span>
         </p>
       ) : null}

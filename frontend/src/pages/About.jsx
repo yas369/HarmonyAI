@@ -9,14 +9,14 @@ const AboutPage = () => (
     transition={{ duration: 0.5 }}
   >
     <h1 className="text-4xl font-heading font-bold">About HarmonyAI</h1>
-    <p className="text-white/70 dark:text-black/70 text-lg leading-relaxed">
+    <p className="text-zinc-700 dark:text-zinc-200 text-lg leading-relaxed">
       HarmonyAI is a generative composition studio designed to preserve and evolve Indian musical heritage. From classical
       ragas to cinematic soundscapes, our AI blends tradition with innovation, empowering creatives to explore new
       melodic horizons.
     </p>
     <div className="space-y-2">
       <h2 className="text-2xl font-heading font-semibold">Created by Yaswanth Chezhian</h2>
-      <p className="text-white/60 dark:text-black/60">
+      <p className="text-zinc-600 dark:text-zinc-300">
         Developer, musician, and storyteller passionate about cultural resonance and sonic craftsmanship.
       </p>
       <div className="flex flex-wrap gap-4 pt-2">

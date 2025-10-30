@@ -2,16 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light dark;
+body {
+  @apply font-body transition-colors duration-500;
+  background: radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.12), transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.12), transparent 55%),
+    linear-gradient(180deg, #0d0d0d 0%, #111111 45%, #0d0d0d 100%);
+  color: #ffffff;
 }
 
-body {
-  @apply font-body bg-[#0D0D0D] text-white transition-colors duration-500;
+body.dark {
+  background: radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.16), transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.18), transparent 55%),
+    linear-gradient(180deg, #0d0d0d 0%, #181818 50%, #0d0d0d 100%);
+  color: #ffffff;
 }
 
 body.light {
-  @apply bg-white text-[#111111];
+  background: radial-gradient(circle at 10% 20%, rgba(155, 93, 229, 0.12), transparent 55%),
+    radial-gradient(circle at 90% 25%, rgba(0, 187, 249, 0.16), transparent 55%),
+    linear-gradient(180deg, #f5f7fb 0%, #ffffff 55%, #f5f7fb 100%);
+  color: #111111;
 }
 
 a {
@@ -19,7 +29,15 @@ a {
 }
 
 .glass-card {
-  @apply bg-white/5 dark:bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 dark:border-white/10 shadow-lg;
+  @apply backdrop-blur-lg rounded-3xl border shadow-lg;
+  background: rgba(24, 24, 24, 0.82);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: inherit;
+}
+
+body.light .glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(17, 17, 17, 0.08);
 }
 
 .gradient-button {
@@ -27,7 +45,25 @@ a {
 }
 
 .input-field {
-  @apply w-full rounded-2xl bg-white/5 dark:bg-white/10 border border-white/10 dark:border-white/10 px-5 py-4 text-base text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-purple/60 focus:border-transparent transition;
+  @apply w-full rounded-2xl px-5 py-4 text-base placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-purple/60 focus:border-transparent transition;
+  background: rgba(12, 12, 12, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f4f4f4;
+}
+
+body.light .input-field {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  color: #111111;
+  --tw-ring-color: rgba(155, 93, 229, 0.45);
+}
+
+.input-field:focus {
+  box-shadow: 0 0 0 4px rgba(155, 93, 229, 0.2);
+}
+
+body.light .input-field::placeholder {
+  color: rgba(17, 17, 17, 0.45);
 }
 
 .section-title {
@@ -35,7 +71,7 @@ a {
 }
 
 .section-subtitle {
-  @apply text-lg text-white/70 dark:text-black/70;
+  @apply text-lg text-zinc-600 dark:text-zinc-300;
 }
 
 .page-padding {

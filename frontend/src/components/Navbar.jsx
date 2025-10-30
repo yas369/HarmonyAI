@@ -25,7 +25,7 @@ const Navbar = () => {
             </div>
             <div>
               <p className="text-lg font-heading font-semibold">HarmonyAI</p>
-              <p className="text-sm text-white/60 dark:text-black/60">Compose from emotion & words</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-300">Compose from emotion & words</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -35,7 +35,7 @@ const Navbar = () => {
                 to={item.to}
                 className={({ isActive }) =>
                   `transition-colors hover:text-brand-aqua ${
-                    isActive ? "text-brand-highlight" : "text-white/70 dark:text-black/70"
+                    isActive ? "text-brand-highlight" : "text-zinc-600 dark:text-zinc-200"
                   }`
                 }
               >
@@ -48,13 +48,13 @@ const Navbar = () => {
               type="button"
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="size-10 rounded-full border border-white/10 dark:border-black/10 bg-white/10 dark:bg-black/10 flex items-center justify-center hover:shadow-glow transition"
+              className="size-10 rounded-full border border-black/10 dark:border-white/20 bg-white/80 dark:bg-white/10 flex items-center justify-center hover:shadow-glow transition"
             >
               {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
             </button>
             <button
               type="button"
-              className="md:hidden size-10 rounded-full border border-white/10 dark:border-black/10 flex items-center justify-center"
+              className="md:hidden size-10 rounded-full border border-black/10 dark:border-white/20 bg-white/80 dark:bg-white/10 flex items-center justify-center"
               onClick={() => setIsOpen((prev) => !prev)}
               aria-label="Toggle navigation menu"
             >
@@ -73,7 +73,7 @@ const Navbar = () => {
                   `rounded-xl px-4 py-2 transition-colors ${
                     isActive
                       ? "bg-brand-purple/20 text-brand-highlight"
-                      : "text-white/80 dark:text-black/70 hover:bg-white/10"
+                      : "text-zinc-700 dark:text-zinc-200 hover:bg-white/20 dark:hover:bg-white/10"
                   }`
                 }
               >

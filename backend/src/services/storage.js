@@ -1,3 +1,5 @@
+const fs = require("fs/promises");
+const path = require("path");
 const { extname } = require("path");
 
 const { storageBucket } = require("../config/firebase");
@@ -5,7 +7,7 @@ const { storageBucket } = require("../config/firebase");
 async function uploadFile(filePath, destination) {
   const storageService = storageBucket();
   if (!storageService) {
-    return filePath;
+    return saveLocally(filePath, destination);
   }
 
   const bucket = storageService.bucket();
@@ -36,6 +38,15 @@ function contentTypeForExtension(ext) {
     default:
       return "application/octet-stream";
   }
+}
+
+async function saveLocally(filePath, destination) {
+  const sanitized = String(destination).replace(/^[\/]+/, "");
+  const mediaRoot = path.resolve(__dirname, "../../public");
+  const targetPath = path.resolve(mediaRoot, sanitized);
+  await fs.mkdir(path.dirname(targetPath), { recursive: true });
+  await fs.copyFile(filePath, targetPath);
+  return `/media/${sanitized.replace(/\\/g, "/")}`;
 }
 
 module.exports = { uploadFile };

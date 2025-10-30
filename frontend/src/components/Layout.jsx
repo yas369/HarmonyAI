@@ -13,7 +13,7 @@ const Layout = () => {
   return (
     <div
       className={`min-h-screen flex flex-col transition-colors duration-500 ${
-        theme === "dark" ? "bg-[#0D0D0D] text-white" : "bg-gray-50 text-[#111111]"
+        theme === "dark" ? "text-white" : "text-[#111111]"
       }`}
     >
       <Navbar />

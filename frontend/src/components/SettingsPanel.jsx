@@ -25,7 +25,7 @@ const SettingsPanel = ({ settings, onChange }) => {
     >
       <div>
         <h2 className="section-title">Personalize Your Studio</h2>
-        <p className="text-white/70 dark:text-black/70">
+        <p className="text-zinc-600 dark:text-zinc-300">
           Adjust your go-to tempo, preferred genre, and theme to craft a familiar creative space.
         </p>
       </div>
@@ -62,7 +62,7 @@ const SettingsPanel = ({ settings, onChange }) => {
             id="default-genre"
             value={genre}
             onChange={(event) => setGenre(event.target.value)}
-            className="input-field bg-[#181818]/60 dark:bg-white/40"
+            className="input-field"
           >
             {["Carnatic", "Hindustani", "Sufi", "Bollywood Fusion"].map((option) => (
               <option key={option} value={option} className="text-[#111111]">
@@ -79,7 +79,7 @@ const SettingsPanel = ({ settings, onChange }) => {
             id="default-emotion"
             value={emotion}
             onChange={(event) => setEmotion(event.target.value)}
-            className="input-field bg-[#181818]/60 dark:bg-white/40"
+            className="input-field"
           >
             {["Love", "Devotion", "Celebration", "Sadness", "Calm"].map((option) => (
               <option key={option} value={option} className="text-[#111111]">
@@ -90,7 +90,7 @@ const SettingsPanel = ({ settings, onChange }) => {
         </div>
         <div className="space-y-3">
           <p className="font-medium">Export Location</p>
-          <div className="glass-card px-4 py-4 text-sm text-white/70 dark:text-black/70">
+          <div className="glass-card px-4 py-4 text-sm text-zinc-600 dark:text-zinc-300">
             Firebase Storage bucket
             <span className="block font-mono text-xs mt-1">harmonyai-e665d.firebasestorage.app</span>
           </div>
@@ -102,7 +102,7 @@ const SettingsPanel = ({ settings, onChange }) => {
         </motion.button>
         <a
           href="#"
-          className="rounded-2xl border border-white/20 px-4 py-2 text-sm text-white/70 dark:text-black/70"
+          className="rounded-2xl border border-black/10 dark:border-white/20 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-200"
           aria-disabled
         >
           📤 Export Data (coming soon)

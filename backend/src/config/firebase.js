@@ -1,4 +1,12 @@
-const admin = require("firebase-admin");
+let admin = null;
+try {
+  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+  admin = require("firebase-admin");
+} catch (error) {
+  if (error.code !== "MODULE_NOT_FOUND") {
+    throw error;
+  }
+}
 
 const { config } = require("./env");
 
@@ -10,7 +18,7 @@ function initFirebase() {
     return;
   }
 
-  if (!config.firebaseCredentials || !config.firebaseBucket) {
+  if (!admin || !config.firebaseCredentials || !config.firebaseBucket) {
     enabled = false;
     console.warn("Firebase credentials missing; uploads will return local file paths.");
     initialized = true;

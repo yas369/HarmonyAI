@@ -8,7 +8,7 @@ const HistoryGrid = ({ compositions, onFavorite }) => (
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-heading text-xl">{composition.genre} Emotionscape</h3>
-            <p className="text-sm text-white/60 dark:text-black/60">
+            <p className="text-sm text-zinc-600 dark:text-zinc-300">
               {composition.emotion} • {composition.tempo} BPM • {new Date(composition.createdAt).toLocaleString()}
             </p>
           </div>
@@ -18,7 +18,7 @@ const HistoryGrid = ({ compositions, onFavorite }) => (
             className={`rounded-full border p-2 transition ${
               composition.favorite
                 ? "border-brand-highlight bg-brand-highlight/20 text-brand-highlight"
-                : "border-white/20 text-white/60 dark:text-black/60 hover:border-brand-purple/60"
+                : "border-black/10 dark:border-white/20 text-zinc-600 dark:text-zinc-200 hover:border-brand-purple/60"
             }`}
             aria-label={composition.favorite ? "Unfavorite composition" : "Favorite composition"}
           >
@@ -33,7 +33,7 @@ const HistoryGrid = ({ compositions, onFavorite }) => (
             preload="none"
           />
         ) : (
-          <p className="text-sm text-white/60 dark:text-black/60">
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">
             Audio preview unavailable for this entry.
           </p>
         )}
@@ -52,7 +52,7 @@ const HistoryGrid = ({ compositions, onFavorite }) => (
           </a>
           <a
             href={composition.audio ?? "#"}
-            className={`rounded-2xl border border-white/20 px-4 py-2 flex items-center gap-2 hover:border-brand-purple/50 ${
+            className={`rounded-2xl border border-black/10 dark:border-white/20 px-4 py-2 flex items-center gap-2 hover:border-brand-purple/50 ${
               composition.audio ? "" : "pointer-events-none opacity-60"
             }`}
             target="_blank"

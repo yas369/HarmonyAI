@@ -23,7 +23,7 @@ const FeedbackForm = ({ compositionId, initialFeedback }) => {
     <form onSubmit={handleSubmit} className="glass-card px-6 py-6 space-y-4 w-full max-w-3xl mx-auto">
       <div>
         <h3 className="section-title text-2xl">How does this melody feel?</h3>
-        <p className="text-sm text-white/60 dark:text-black/60">Share your impressions to help HarmonyAI improve.</p>
+        <p className="text-sm text-zinc-600 dark:text-zinc-300">Share your impressions to help HarmonyAI improve.</p>
       </div>
       <div className="flex items-center justify-center gap-3">
         {stars.map((value) => (
@@ -37,7 +37,9 @@ const FeedbackForm = ({ compositionId, initialFeedback }) => {
           >
             <Star
               className={`size-8 transition ${
-                rating >= value ? "fill-brand-highlight text-brand-highlight" : "text-white/40 dark:text-black/40"
+                rating >= value
+                  ? "fill-brand-highlight text-brand-highlight"
+                  : "text-zinc-500 dark:text-zinc-400"
               }`}
             />
           </motion.button>

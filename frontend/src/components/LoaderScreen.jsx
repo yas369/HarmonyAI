@@ -10,7 +10,7 @@ const LoaderScreen = ({ stageMessage }) => (
         transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
       >
         <motion.div
-          className="w-24 h-24 rounded-full bg-[#0D0D0D]/80 flex items-center justify-center"
+          className="w-24 h-24 rounded-full bg-white/80 dark:bg-[#0D0D0D]/85 flex items-center justify-center"
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
         >
@@ -19,10 +19,10 @@ const LoaderScreen = ({ stageMessage }) => (
       </motion.div>
       <div className="space-y-3">
         <h2 className="section-title">Generating Your Composition...</h2>
-        <p className="text-base text-white/70 dark:text-black/70">
+        <p className="text-base text-zinc-600 dark:text-zinc-200">
           {stageMessage}
         </p>
-        <p className="text-xs uppercase tracking-widest text-white/40 dark:text-black/40">
+        <p className="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
           This may take 15–30 seconds
         </p>
       </div>
@@ -30,7 +30,7 @@ const LoaderScreen = ({ stageMessage }) => (
         {[0, 1, 2, 3, 4].map((index) => (
           <motion.span
             key={index}
-            className="size-2.5 rounded-full bg-white/40"
+            className="size-2.5 rounded-full bg-zinc-400/60 dark:bg-white/50"
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ repeat: Infinity, duration: 1.5, delay: index * 0.15 }}
           />

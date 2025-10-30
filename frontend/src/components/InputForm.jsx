@@ -75,21 +75,21 @@ const InputForm = ({ onSubmit, initialTempo, initialGenre, initialEmotion }) => 
           maxLength={1600}
           disabled={isGenerating}
         />
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/50 dark:text-black/50">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-600 dark:text-zinc-400">
           <span>{lyricWordCount} / 200 words</span>
           {error ? <span className="text-red-400">{error}</span> : null}
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         <div className="flex flex-col gap-2">
-          <label htmlFor="emotion" className="font-medium text-sm uppercase tracking-wide text-white/60 dark:text-black/60">
+          <label htmlFor="emotion" className="font-medium text-sm uppercase tracking-wide text-zinc-600 dark:text-zinc-300">
             Emotion
           </label>
           <select
             id="emotion"
             value={emotion}
             onChange={(event) => setEmotion(event.target.value)}
-            className="input-field bg-[#181818]/60 dark:bg-white/40 text-base"
+            className="input-field text-base"
             disabled={isGenerating}
           >
             {emotionOptions.map((option) => (
@@ -100,14 +100,14 @@ const InputForm = ({ onSubmit, initialTempo, initialGenre, initialEmotion }) => 
           </select>
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="genre" className="font-medium text-sm uppercase tracking-wide text-white/60 dark:text-black/60">
+          <label htmlFor="genre" className="font-medium text-sm uppercase tracking-wide text-zinc-600 dark:text-zinc-300">
             Genre
           </label>
           <select
             id="genre"
             value={genre}
             onChange={(event) => setGenre(event.target.value)}
-            className="input-field bg-[#181818]/60 dark:bg-white/40 text-base"
+            className="input-field text-base"
             disabled={isGenerating}
           >
             {genreOptions.map((option) => (
@@ -118,7 +118,7 @@ const InputForm = ({ onSubmit, initialTempo, initialGenre, initialEmotion }) => 
           </select>
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="tempo" className="font-medium text-sm uppercase tracking-wide text-white/60 dark:text-black/60">
+          <label htmlFor="tempo" className="font-medium text-sm uppercase tracking-wide text-zinc-600 dark:text-zinc-300">
             Tempo: {tempo} BPM
           </label>
           <input

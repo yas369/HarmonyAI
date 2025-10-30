@@ -1,8 +1,16 @@
 const fs = require("fs");
 const path = require("path");
-const dotenv = require("dotenv");
 
-dotenv.config();
+try {
+  // Optional dependency when running outside packaged environment
+  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+  const dotenv = require("dotenv");
+  dotenv.config();
+} catch (error) {
+  if (error.code !== "MODULE_NOT_FOUND") {
+    throw error;
+  }
+}
 
 function readFirebaseCredentials() {
   if (process.env.FIREBASE_CREDENTIALS) {

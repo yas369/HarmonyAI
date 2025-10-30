@@ -39,7 +39,7 @@ const ResultPage = () => {
           >
             Your AI-Generated Composition Is Ready!
           </motion.h2>
-          <p className="text-white/70 dark:text-black/70 max-w-2xl mx-auto">
+          <p className="text-zinc-800 dark:text-zinc-100 max-w-2xl mx-auto">
             Emotion: <span className="font-semibold">{currentResult.emotion}</span> • Genre: <span className="font-semibold">{currentResult.genre}</span> • Tempo: <span className="font-semibold">{currentResult.tempo} BPM</span>
           </p>
         </motion.div>
