@@ -5,7 +5,10 @@ const { uploadFile } = require("../services/storage");
 
 const router = Router();
 
-router.post("/generate", async (req, res, next) => {
+const routes = ["/generate", "/api/generate"];
+
+routes.forEach((route) => {
+  router.post(route, async (req, res, next) => {
   try {
     const composition = await requestComposition(req.body);
 
@@ -23,6 +26,7 @@ router.post("/generate", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  });
 });
 
 function buildDestination(body, extension) {
