@@ -401,6 +401,7 @@ FIREBASE_BUCKET=musicapp.appspot.com
 ```
 FIREBASE_API_KEY=AIza...
 MODEL_PATH=/models/music_transformer/
+HUGGINGFACE_TOKEN=hf_xxx   # enables remote calls to facebook/musicgen-small
 ```
 
 Include additional variables for style-transfer weights or optional telemetry (e.g., `SENTRY_DSN`) as needed. Validate env vars at startup using packages like `zod` (Node.js) or `pydantic` (FastAPI) to fail fast when configuration is missing.
@@ -507,7 +508,7 @@ The repository now includes production-ready scaffolding for every layer describ
 
 ### AI Composer (`/composer-ai`)
 - `app/main.py` exposes `/compose`, `/style-transfer`, and `/health` endpoints via FastAPI.
-- `app/generation.py` synthesizes deterministic melodies based on lyrics, emotion, and genre, exporting WAV, MIDI, and PDF files using `midiutil` and `reportlab`.
+- `app/generation.py` attempts to render audio with Hugging Face's `facebook/musicgen-small` model whenever a `HUGGINGFACE_TOKEN` is present, then falls back to the procedural synthesiser that still produces accompanying MIDI and PDF summaries.
 - Install dependencies with `pip install -r requirements.txt` and start the server with `uvicorn app.main:app --reload`.
 
 ### Frontend (`/frontend`)

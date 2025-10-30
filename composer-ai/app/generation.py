@@ -6,7 +6,12 @@ import struct
 import wave
 from array import array
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import Iterable, List, Optional, Tuple
+
+try:
+    from .musicgen import try_musicgen
+except Exception:  # pragma: no cover - optional dependency failures fall back to procedural synth
+    try_musicgen = None
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "output"
@@ -207,9 +212,10 @@ def render_outputs(
     melody: Iterable[Tuple[int, float]],
     tempo: int,
     stem: str,
+    preferred_wav: Optional[Path] = None,
 ) -> Tuple[Path, Path, Path]:
     midi = save_midi(melody, tempo, stem)
-    wav = save_wav(melody, tempo, stem)
+    wav = preferred_wav if preferred_wav is not None else save_wav(melody, tempo, stem)
     pdf = save_pdf(melody, stem)
     return wav, midi, pdf
 
@@ -217,7 +223,15 @@ def render_outputs(
 def compose(lyrics: str, emotion: str, genre: str, tempo: int) -> Tuple[Path, Path, Path]:
     melody = generate_melody(lyrics, emotion, genre, tempo)
     stem = f"composition_{abs(hash((lyrics, emotion, genre, tempo))) % 1_000_000}"
-    return render_outputs(melody, tempo, stem)
+
+    wav_path: Optional[Path] = None
+    if callable(try_musicgen):
+        try:
+            wav_path = try_musicgen(lyrics, emotion, genre, tempo, stem)
+        except Exception as exc:  # pragma: no cover - MusicGen failures fall back to procedural output
+            print(f"MusicGen integration failed, falling back to synthesised audio: {exc}")
+
+    return render_outputs(melody, tempo, stem, preferred_wav=wav_path)
 
 
 def apply_style_transfer(
