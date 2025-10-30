@@ -2,7 +2,6 @@ node_modules
 .dist
 *.pyc
 __pycache__
-.env
 backend/dist
 frontend/dist
 .DS_Store
@@ -12,3 +11,6 @@ output/*.pdf
 composer-ai/output/*.wav
 composer-ai/output/*.mid
 composer-ai/output/*.pdf
+# 🔒 Secrets to ignore
+backend/firebase-service-account.json
+.env
