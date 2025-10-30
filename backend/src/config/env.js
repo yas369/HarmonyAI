@@ -1,12 +1,43 @@
+const fs = require("fs");
+const path = require("path");
 const dotenv = require("dotenv");
 
 dotenv.config();
+
+function readFirebaseCredentials() {
+  if (process.env.FIREBASE_CREDENTIALS) {
+    return process.env.FIREBASE_CREDENTIALS;
+  }
+
+  const explicitPath = process.env.FIREBASE_CREDENTIALS_FILE;
+  const defaultPath = path.resolve(
+    __dirname,
+    "../../../firebase-config/serviceAccountKey.json"
+  );
+  const candidatePath = explicitPath
+    ? path.resolve(explicitPath)
+    : defaultPath;
+
+  try {
+    const raw = fs.readFileSync(candidatePath, "utf8");
+    JSON.parse(raw);
+    return raw;
+  } catch (error) {
+    if (explicitPath) {
+      console.warn(
+        `Unable to read Firebase credentials file at ${candidatePath}:`,
+        error.message
+      );
+    }
+    return undefined;
+  }
+}
 
 const config = {
   port: Number(process.env.PORT ?? 4000),
   aiServiceUrl: process.env.AI_SERVICE_URL ?? "http://localhost:8000",
   firebaseBucket: process.env.FIREBASE_BUCKET ?? "",
-  firebaseCredentials: process.env.FIREBASE_CREDENTIALS,
+  firebaseCredentials: readFirebaseCredentials(),
 };
 
 module.exports = { config };

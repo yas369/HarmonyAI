@@ -19,4 +19,9 @@ export const firebaseConfig = {
 
 ## Service Account (Backend)
 
-Set the `FIREBASE_CREDENTIALS` environment variable to the JSON representation of your Firebase service account to enable authenticated uploads from the backend.
+You can provide your Firebase Admin SDK credentials in either of the following ways:
+
+1. Set the `FIREBASE_CREDENTIALS` environment variable to the JSON representation of your service account.
+2. Drop the JSON file into this directory as `serviceAccountKey.json`. The backend now detects this file automatically (or you can point to a different location via the `FIREBASE_CREDENTIALS_FILE` environment variable).
+
+When using a local file, ensure the JSON object matches the structure provided in `serviceAccountKey.json` and that sensitive keys are stored securely when committing changes.
