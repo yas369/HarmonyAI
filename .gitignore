@@ -14,3 +14,15 @@ composer-ai/output/*.pdf
 # 🔒 Secrets to ignore
 backend/firebase-service-account.json
 .env
+# Ignore environment & credentials
+.env
+*.env
+*.json
+backend/firebase-service-account.json
+backend/harmonyai-e665d-firebase-adminsdk-fbsvc-3d1ee74175.json
+
+# Ignore dependencies & build outputs
+node_modules/
+output/
+dist/
+build/
