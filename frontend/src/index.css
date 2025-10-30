@@ -2,26 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply font-body transition-colors duration-500;
-  background: radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.12), transparent 55%),
-    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.12), transparent 55%),
-    linear-gradient(180deg, #0d0d0d 0%, #111111 45%, #0d0d0d 100%);
-  color: #ffffff;
-}
-
-body.dark {
-  background: radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.16), transparent 55%),
-    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.18), transparent 55%),
-    linear-gradient(180deg, #0d0d0d 0%, #181818 50%, #0d0d0d 100%);
-  color: #ffffff;
+:root {
+  color-scheme: dark;
+  --studio-bg-primary: #0d0d0d;
+  --studio-bg-secondary: #181818;
+  --studio-text: #ffffff;
+  --studio-glass-bg: rgba(24, 24, 24, 0.82);
+  --studio-glass-border: rgba(255, 255, 255, 0.08);
+  --studio-input-bg: rgba(12, 12, 12, 0.78);
+  --studio-input-border: rgba(255, 255, 255, 0.12);
+  --studio-input-text: #f4f4f4;
+  --studio-placeholder: rgba(255, 255, 255, 0.45);
 }
 
 body.light {
-  background: radial-gradient(circle at 10% 20%, rgba(155, 93, 229, 0.12), transparent 55%),
-    radial-gradient(circle at 90% 25%, rgba(0, 187, 249, 0.16), transparent 55%),
-    linear-gradient(180deg, #f5f7fb 0%, #ffffff 55%, #f5f7fb 100%);
-  color: #111111;
+  color-scheme: light;
+  --studio-bg-primary: #f5f7fb;
+  --studio-bg-secondary: #ffffff;
+  --studio-text: #111111;
+  --studio-glass-bg: rgba(255, 255, 255, 0.88);
+  --studio-glass-border: rgba(17, 17, 17, 0.08);
+  --studio-input-bg: rgba(255, 255, 255, 0.92);
+  --studio-input-border: rgba(17, 17, 17, 0.12);
+  --studio-input-text: #111111;
+  --studio-placeholder: rgba(17, 17, 17, 0.42);
+}
+
+body {
+  @apply font-body transition-colors duration-500;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.12), transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--studio-bg-primary) 0%, var(--studio-bg-secondary) 48%, var(--studio-bg-primary) 100%);
+  color: var(--studio-text);
+}
+
+body.dark {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(155, 93, 229, 0.16), transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(0, 187, 249, 0.2), transparent 55%),
+    linear-gradient(180deg, var(--studio-bg-primary) 0%, var(--studio-bg-secondary) 50%, var(--studio-bg-primary) 100%);
+}
+
+body.light {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(155, 93, 229, 0.12), transparent 55%),
+    radial-gradient(circle at 90% 25%, rgba(0, 187, 249, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--studio-bg-primary) 0%, var(--studio-bg-secondary) 55%, var(--studio-bg-primary) 100%);
 }
 
 a {
@@ -29,41 +57,30 @@ a {
 }
 
 .glass-card {
-  @apply backdrop-blur-lg rounded-3xl border shadow-lg;
-  background: rgba(24, 24, 24, 0.82);
-  border-color: rgba(255, 255, 255, 0.06);
+  @apply backdrop-blur-xl rounded-3xl border shadow-lg;
+  background: var(--studio-glass-bg);
+  border-color: var(--studio-glass-border);
   color: inherit;
 }
 
-body.light .glass-card {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(17, 17, 17, 0.08);
-}
-
 .gradient-button {
-  @apply bg-gradient-to-r from-brand-purple to-brand-aqua text-white font-semibold rounded-2xl px-6 py-3 shadow-glow transition-transform duration-300 ease-out hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-highlight focus:ring-offset-2 focus:ring-offset-transparent;
+  @apply bg-gradient-to-r from-brand-purple via-brand-aqua to-brand-purple text-white font-semibold rounded-2xl px-6 py-3 shadow-glow transition-transform duration-300 ease-out hover:scale-105 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-highlight focus-visible:ring-offset-2;
+  backdrop-filter: blur(12px);
 }
 
 .input-field {
-  @apply w-full rounded-2xl px-5 py-4 text-base placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-purple/60 focus:border-transparent transition;
-  background: rgba(12, 12, 12, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f4f4f4;
+  @apply w-full rounded-2xl px-5 py-4 text-base focus:outline-none focus:ring-2 focus:ring-brand-purple/60 focus:border-transparent transition;
+  background: var(--studio-input-bg);
+  border: 1px solid var(--studio-input-border);
+  color: var(--studio-input-text);
 }
 
-body.light .input-field {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  color: #111111;
-  --tw-ring-color: rgba(155, 93, 229, 0.45);
+.input-field::placeholder {
+  color: var(--studio-placeholder);
 }
 
 .input-field:focus {
-  box-shadow: 0 0 0 4px rgba(155, 93, 229, 0.2);
-}
-
-body.light .input-field::placeholder {
-  color: rgba(17, 17, 17, 0.45);
+  box-shadow: 0 0 0 4px rgba(155, 93, 229, 0.18);
 }
 
 .section-title {

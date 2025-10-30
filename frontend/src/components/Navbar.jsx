@@ -15,6 +15,11 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
+  const toggleClasses =
+    theme === "dark"
+      ? "bg-[#1f1f1f]/90 border-white/15 text-white hover:shadow-glow"
+      : "bg-white/90 border-black/10 text-[#0d0d0d] hover:shadow-lg";
+
   return (
     <header className="py-6">
       <div className="page-padding">
@@ -48,13 +53,13 @@ const Navbar = () => {
               type="button"
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="size-10 rounded-full border border-black/10 dark:border-white/20 bg-white/80 dark:bg-white/10 flex items-center justify-center hover:shadow-glow transition"
+              className={`size-10 rounded-full flex items-center justify-center transition-colors duration-300 ${toggleClasses}`}
             >
               {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
             </button>
             <button
               type="button"
-              className="md:hidden size-10 rounded-full border border-black/10 dark:border-white/20 bg-white/80 dark:bg-white/10 flex items-center justify-center"
+              className={`md:hidden size-10 rounded-full flex items-center justify-center transition-colors duration-300 ${toggleClasses}`}
               onClick={() => setIsOpen((prev) => !prev)}
               aria-label="Toggle navigation menu"
             >
