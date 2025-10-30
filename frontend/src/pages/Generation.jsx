@@ -15,7 +15,7 @@ const GenerationPage = () => {
   }, [isGenerating, currentRequest, navigate]);
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-gradient-to-br from-brand-purple/20 via-brand-aqua/20 to-brand-highlight/20 rounded-3xl">
+    <div className="min-h-[60vh] flex items-center justify-center rounded-3xl bg-gradient-to-br from-brand-purple/20 via-brand-aqua/20 to-brand-highlight/20 w-full max-w-4xl mx-auto">
       <LoaderScreen stageMessage={stageMessages[stageIndex] ?? stageMessages.at(-1)} />
     </div>
   );

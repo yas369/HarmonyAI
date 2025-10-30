@@ -21,7 +21,7 @@ const HomePage = () => {
   return (
     <div className="space-y-12">
       <motion.section
-        className="glass-card px-8 py-10 text-center space-y-4"
+        className="glass-card px-8 py-10 text-center space-y-4 mx-auto max-w-5xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -54,7 +54,7 @@ const HomePage = () => {
         </motion.button>
       </motion.section>
 
-      <section id="composer-form">
+      <section id="composer-form" className="mx-auto max-w-5xl w-full">
         <InputForm
           onSubmit={handleGenerate}
           initialTempo={settings.defaultTempo}

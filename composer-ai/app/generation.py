@@ -2,14 +2,11 @@ from __future__ import annotations
 
 import math
 import random
+import struct
 import wave
 from array import array
 from pathlib import Path
 from typing import Iterable, List, Tuple
-
-from midiutil import MIDIFile
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "output"
@@ -17,6 +14,7 @@ OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 SAMPLE_RATE = 44100
 BIT_DEPTH = 16
+TICKS_PER_BEAT = 480
 
 
 def _scale_for_genre(genre: str) -> List[int]:
@@ -73,20 +71,49 @@ def _melody_filename(prefix: str, extension: str) -> Path:
     return OUTPUT_DIR / f"{prefix}.{extension}"
 
 
+def _encode_variable_length(value: int) -> bytes:
+    """Encode an integer using the MIDI variable-length quantity format."""
+    buffer = value & 0x7F
+    value >>= 7
+    bytes_list = [buffer]
+    while value:
+        buffer = (value & 0x7F) | 0x80
+        bytes_list.insert(0, buffer)
+        value >>= 7
+    return bytes(bytes_list)
+
+
+def _clamp_pitch(pitch: int) -> int:
+    return max(0, min(127, pitch))
+
+
 def save_midi(melody: Iterable[Tuple[int, float]], tempo: int, filename: str) -> Path:
-    midi = MIDIFile(1)
-    track = 0
-    time = 0
-    midi.addTempo(track, time, tempo)
+    midi_path = _melody_filename(filename, "mid")
+    tempo = max(tempo, 1)
+    microseconds_per_quarter = int(60_000_000 / tempo)
+
+    track_data = bytearray()
+    track_data.extend(b"\x00\xFF\x51\x03" + microseconds_per_quarter.to_bytes(3, "big"))
+    track_data.extend(b"\x00\xC0\x30")  # choose a mellow synth pad instrument
 
     for pitch, duration in melody:
-        midi.addNote(track, channel=0, pitch=pitch, time=time, duration=duration, volume=90)
-        time += duration
+        ticks = max(1, int(duration * TICKS_PER_BEAT))
+        clamped_pitch = _clamp_pitch(pitch)
+        track_data.extend(b"\x00")
+        track_data.extend(bytes([0x90, clamped_pitch, 0x5A]))
+        track_data.extend(_encode_variable_length(ticks))
+        track_data.extend(bytes([0x80, clamped_pitch, 0x40]))
 
-    path = _melody_filename(filename, "mid")
-    with path.open("wb") as f:
-        midi.writeFile(f)
-    return path
+    track_data.extend(b"\x00\xFF\x2F\x00")
+
+    with midi_path.open("wb") as midi_file:
+        midi_file.write(b"MThd")
+        midi_file.write(struct.pack(">IHHH", 6, 0, 1, TICKS_PER_BEAT))
+        midi_file.write(b"MTrk")
+        midi_file.write(struct.pack(">I", len(track_data)))
+        midi_file.write(track_data)
+
+    return midi_path
 
 
 def save_wav(melody: Iterable[Tuple[int, float]], tempo: int, filename: str) -> Path:
@@ -98,9 +125,16 @@ def save_wav(melody: Iterable[Tuple[int, float]], tempo: int, filename: str) -> 
 
     for pitch, duration in melody:
         frequency = 440.0 * (2 ** ((pitch - 69) / 12))
-        total_samples = int(SAMPLE_RATE * seconds_per_beat * duration)
+        total_samples = max(1, int(SAMPLE_RATE * seconds_per_beat * duration))
+        fade_samples = max(1, min(total_samples // 4, 400))
         for n in range(total_samples):
-            value = amplitude * math.sin(2 * math.pi * frequency * (n / SAMPLE_RATE))
+            phase = 2 * math.pi * frequency * (n / SAMPLE_RATE)
+            envelope = 1.0
+            if n < fade_samples:
+                envelope *= n / fade_samples
+            if total_samples - n <= fade_samples:
+                envelope *= (total_samples - n) / fade_samples
+            value = amplitude * math.sin(phase) * envelope
             data.append(int(value))
 
     with wave.open(str(wav_path), "wb") as wav_file:
@@ -112,26 +146,60 @@ def save_wav(melody: Iterable[Tuple[int, float]], tempo: int, filename: str) -> 
     return wav_path
 
 
+def _escape_pdf_text(text: str) -> str:
+    return text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+
+
 def save_pdf(melody: Iterable[Tuple[int, float]], filename: str) -> Path:
     pdf_path = _melody_filename(filename, "pdf")
-    c = canvas.Canvas(str(pdf_path), pagesize=letter)
-    width, height = letter
+    lines = [f"{index:02d}. Pitch: {pitch} • Duration: {duration} beats" for index, (pitch, duration) in enumerate(melody, start=1)]
 
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(72, height - 72, "AI Generated Melody")
+    content_lines = [
+        "BT",
+        "/F1 18 Tf",
+        "1 0 0 1 72 750 Tm",
+        f"({_escape_pdf_text('AI Generated Melody')}) Tj",
+        "0 -24 Td",
+        "/F1 12 Tf",
+        f"({_escape_pdf_text('Pitch / Duration (beats)')}) Tj",
+        "0 -18 Td",
+        "14 TL",
+    ]
 
-    c.setFont("Helvetica", 12)
-    c.drawString(72, height - 108, "Pitch / Duration (beats)")
+    for line in lines:
+        content_lines.append(f"({_escape_pdf_text(line)}) Tj")
+        content_lines.append("T*")
 
-    y = height - 144
-    for index, (pitch, duration) in enumerate(melody, start=1):
-        c.drawString(72, y, f"{index:02d}. Pitch: {pitch} Duration: {duration}")
-        y -= 18
-        if y < 72:
-            c.showPage()
-            y = height - 72
+    content_lines.append("ET")
+    stream = "\n".join(content_lines).encode("utf-8")
 
-    c.save()
+    objects = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        b"<< /Length " + str(len(stream)).encode("ascii") + b" >>\nstream\n" + stream + b"\nendstream",
+    ]
+
+    with pdf_path.open("wb") as pdf_file:
+        pdf_file.write(b"%PDF-1.4\n")
+        offsets: List[int] = []
+        for index, obj in enumerate(objects, start=1):
+            offsets.append(pdf_file.tell())
+            pdf_file.write(f"{index} 0 obj\n".encode("ascii"))
+            pdf_file.write(obj)
+            pdf_file.write(b"\nendobj\n")
+        xref_position = pdf_file.tell()
+        pdf_file.write(f"xref\n0 {len(objects) + 1}\n".encode("ascii"))
+        pdf_file.write(b"0000000000 65535 f \n")
+        for offset in offsets:
+            pdf_file.write(f"{offset:010d} 00000 n \n".encode("ascii"))
+        pdf_file.write(b"trailer\n")
+        pdf_file.write(f"<< /Size {len(objects) + 1} /Root 1 0 R >>\n".encode("ascii"))
+        pdf_file.write(b"startxref\n")
+        pdf_file.write(f"{xref_position}\n".encode("ascii"))
+        pdf_file.write(b"%%EOF")
+
     return pdf_path
 
 

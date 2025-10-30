@@ -18,7 +18,7 @@ const SettingsPanel = ({ settings, onChange }) => {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="glass-card px-6 py-8 flex flex-col gap-6"
+      className="glass-card px-6 py-8 flex flex-col gap-6 w-full max-w-4xl mx-auto"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -64,7 +64,7 @@ const SettingsPanel = ({ settings, onChange }) => {
             onChange={(event) => setGenre(event.target.value)}
             className="input-field bg-[#181818]/60 dark:bg-white/40"
           >
-            {['Carnatic', 'Hindustani', 'Sufi', 'Bollywood Fusion'].map((option) => (
+            {["Carnatic", "Hindustani", "Sufi", "Bollywood Fusion"].map((option) => (
               <option key={option} value={option} className="text-[#111111]">
                 {option}
               </option>

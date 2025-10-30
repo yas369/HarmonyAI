@@ -20,7 +20,7 @@ const FeedbackForm = ({ compositionId, initialFeedback }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card px-6 py-6 space-y-4">
+    <form onSubmit={handleSubmit} className="glass-card px-6 py-6 space-y-4 w-full max-w-3xl mx-auto">
       <div>
         <h3 className="section-title text-2xl">How does this melody feel?</h3>
         <p className="text-sm text-white/60 dark:text-black/60">Share your impressions to help HarmonyAI improve.</p>

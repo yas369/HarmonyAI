@@ -17,9 +17,10 @@ const Layout = () => {
       }`}
     >
       <Navbar />
-      <main className="flex-1 page-padding pt-8 pb-16">
-        {/* React Router outlet renders child pages */}
-        <Outlet />
+      <main className="flex-1 w-full">
+        <div className="page-padding max-w-6xl mx-auto w-full pt-8 pb-16">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <Toast toast={toast} />

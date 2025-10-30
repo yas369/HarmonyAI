@@ -56,7 +56,7 @@ const InputForm = ({ onSubmit, initialTempo, initialGenre, initialEmotion }) => 
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="glass-card px-6 sm:px-10 py-8 flex flex-col gap-6"
+      className="glass-card px-6 sm:px-10 py-8 flex flex-col gap-6 w-full"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -75,7 +75,7 @@ const InputForm = ({ onSubmit, initialTempo, initialGenre, initialEmotion }) => 
           maxLength={1600}
           disabled={isGenerating}
         />
-        <div className="flex justify-between text-xs text-white/50 dark:text-black/50">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/50 dark:text-black/50">
           <span>{lyricWordCount} / 200 words</span>
           {error ? <span className="text-red-400">{error}</span> : null}
         </div>
